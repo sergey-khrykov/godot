@@ -4,7 +4,7 @@ on: [push, pull_request]
 # Global Settings
 env:
   GODOT_BASE_BRANCH: master
-  SCONSFLAGS: platform=android verbose=yes warnings=extra werror=yes debug_symbols=no --jobs=2 module_text_server_fb_enabled=yes
+  SCONSFLAGS: platform=android verbose=yes debug_symbols=yes --jobs=2 tools=no module_firebase_enabled=no module_bullet_enabled=no module_websocket_enabled=no game_center=no disable_3d=yes
   SCONS_CACHE_LIMIT: 4096
   ANDROID_NDK_VERSION: 21.1.6352462
 
@@ -67,7 +67,9 @@ jobs:
           ANDROID_NDK_ROOT: /usr/local/lib/android/sdk/ndk/${{env.ANDROID_NDK_VERSION}}/
         run: |
           scons target=release_debug tools=no android_arch=armv7
+          scons target=debug tools=no android_arch=armv7
           scons target=release_debug tools=no android_arch=arm64v8
+          scons target=debug tools=no android_arch=arm64v8
           cd platform/android/java
           ./gradlew generateGodotTemplates
           cd ../../..
