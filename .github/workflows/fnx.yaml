@@ -42,8 +42,6 @@ jobs:
               mv ios.release.zip bin/
           - os: ubuntu-20.04
             token: android.template
-            env: 
-              ANDROID_NDK_ROOT: /usr/local/lib/android/sdk/ndk/${{env.ANDROID_NDK_VERSION}}/
             build: |
               scons platform=android -j 8 target=release_debug android_arch=armv7 tools=no module_firebase_enabled=no module_bullet_enabled=no module_websocket_enabled=no game_center=no disable_3d=yes
               scons platform=android -j 8 target=debug android_arch=armv7 tools=no module_firebase_enabled=no module_bullet_enabled=no module_websocket_enabled=no game_center=no disable_3d=yes
