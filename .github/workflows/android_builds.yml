@@ -3,7 +3,6 @@ on: [push, pull_request]
 
 # Global Settings
 env:
-  GODOT_BASE_BRANCH: master
   SCONSFLAGS: platform=android verbose=yes debug_symbols=yes --jobs=2 tools=no module_firebase_enabled=no module_bullet_enabled=no module_websocket_enabled=no game_center=no disable_3d=yes
   SCONS_CACHE_LIMIT: 4096
   ANDROID_NDK_VERSION: 21.1.6352462
@@ -12,10 +11,13 @@ jobs:
   android-template:
     runs-on: "ubuntu-20.04"
 
-    name: Template (target=release, tools=no)
+    name: Template (target=release_debug,debug; tools=no)
 
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout Engine
+        uses: actions/checkout@v2
+        with:
+          submodules: 'recursive'
 
       # Azure repositories are not reliable, we need to prevent azure giving us packages.
       - name: Make apt sources.list use the default Ubuntu repositories
@@ -35,15 +37,14 @@ jobs:
 
       # Upload cache on completion and check it out now
       - name: Load .scons_cache directory
-        id: android-template-cache
         uses: actions/cache@v2
         with:
-          path: ${{github.workspace}}/.scons_cache/
-          key: ${{github.job}}-${{env.GODOT_BASE_BRANCH}}-${{github.ref}}-${{github.sha}}
+          path: .scons_cache
+          key: ${{matrix.token}}-${{github.ref}}-${{github.sha}}
           restore-keys: |
-            ${{github.job}}-${{env.GODOT_BASE_BRANCH}}-${{github.ref}}-${{github.sha}}
-            ${{github.job}}-${{env.GODOT_BASE_BRANCH}}-${{github.ref}}
-            ${{github.job}}-${{env.GODOT_BASE_BRANCH}}
+            ${{matrix.token}}-${{github.ref}}-${{github.sha}}
+            ${{matrix.token}}-${{github.ref}}
+            ${{matrix.token}}
 
       # Use python 3.x release (works cross platform)
       - name: Set up Python 3.x
