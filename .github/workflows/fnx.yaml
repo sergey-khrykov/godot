@@ -1,5 +1,5 @@
 name: build
-on: [push]
+on: [[public]
   # let's build everty time for now
   # push:
   #   branches:    
@@ -78,6 +78,7 @@ jobs:
         env:
           SCONS_CACHE: ${{github.workspace}}/.scons_cache/
         run: ${{ matrix.build }}
+
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
